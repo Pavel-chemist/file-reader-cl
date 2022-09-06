@@ -2,19 +2,13 @@ use std::fs;
 use std::io;
 
 fn main() {
-    println!("`ls`");
-    // Read the contents of a directory, returns `io::Result<Vec<Path>>`
-    match fs::read_dir(".") {
-        Err(why) => println!("! {:?}", why.kind()),
-        Ok(paths) => for path in paths {
-            println!("> {:?}", path.unwrap().path());
-        },
-    }
-
     let mut file_buff: Vec<u8> = Vec::new();
-    
+    let file_path: String;
 
-    match fs::read("test/colors.bmp") {
+    println!("Enter the path to the file: ");
+    file_path = read_input("this should be a string");
+
+    match fs::read(file_path) {
         Err(why) => println!("! {:?}", why.kind()),
         Ok(buff) => {
             file_buff = buff;
@@ -29,9 +23,13 @@ fn main() {
 
 fn print_file_buffer(buff: Vec<u8>) {
     let mut index: usize;
-    let mut answer: String = String::from("");
+    let mut answer: String;
 
     for j in 0..(buff.len() / 16 + 1) {
+        if (j % 16) == 0 {
+            println!("Block #{}", j / 16 + 1);
+        }
+
         print!("{}\t|  ", j + 1);
         for i in 0..16 {
             index = j * 16 + i;
@@ -55,7 +53,6 @@ fn print_file_buffer(buff: Vec<u8>) {
                 print!("{}", byte_to_char(buff[index]));
             } else {
                 print!(" ");
-                answer = "n".to_string();
             }
         }
         println!("  |");
